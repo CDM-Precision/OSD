@@ -26,7 +26,7 @@ powershell iex (irm ninja.osdcloud.com)
 .NOTES
     Version 24.9.6.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/ninja.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/ninja.osdcloud.com.ps1
 .EXAMPLE
     powershell iex (irm ninja.osdcloud.com)
 #>
@@ -50,7 +50,7 @@ else {
 }
 
 Write-Host -ForegroundColor Green "[+] $ScriptName $ScriptVersion ($WindowsPhase Phase)"
-#Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+#Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
 #endregion
 
 #region Admin Elevation

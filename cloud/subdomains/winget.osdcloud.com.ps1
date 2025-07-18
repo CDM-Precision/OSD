@@ -26,7 +26,7 @@ powershell iex (irm winget.osdcloud.com)
 .NOTES
     Version 23.9.28.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/subdomains/winget.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/subdomains/winget.osdcloud.com.ps1
 .EXAMPLE
     powershell iex (irm winget.osdcloud.com)
 #>
@@ -51,7 +51,7 @@ else {
 }
 
 Write-Host -ForegroundColor Green "[+] $ScriptName $ScriptVersion ($WindowsPhase Phase)"
-Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
 #endregion
 
 #region Admin Elevation

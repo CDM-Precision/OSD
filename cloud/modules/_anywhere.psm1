@@ -6,9 +6,9 @@
 .NOTES
     This module can be loaded in all Windows phases
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/_anywhere.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/_anywhere.psm1')
 #>
 #=================================================
 #region Functions
@@ -349,7 +349,7 @@ function osdcloud-UpdateModuleFilesManually {
     $OSDCloudGUIDevProjectPath = "Projects\OSDCloudDev"
     $OSDCloudGUIProjectPath = "Projects\OSDCloudGUI"
     $OSDCloudFunctionsPath = "Public\Functions\OSDCloud"
-    $GitHubURI = "https://raw.githubusercontent.com/OSDeploy/OSD/master"
+    $GitHubURI = "https://raw.githubusercontent.com/CDM-Precision/OSD/master"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.ps1"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.xaml" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.xaml"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIProjectPath/MainWindow.ps1"
@@ -407,7 +407,7 @@ function osdcloud-UpdateModuleFilesManually {
             Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/OSD.psd1" -OutFile "$ModulePath/OSD.psd1"
         }
     }
-    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')}
+    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1')}
 }
 #endregion
 #=================================================

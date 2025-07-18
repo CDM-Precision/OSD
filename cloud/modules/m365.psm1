@@ -6,9 +6,9 @@
 .NOTES
     This module is designed for OOBE
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/M365.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/M365.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/M365.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/M365.psm1')
 #>
 #=================================================
 #region Functions
@@ -40,7 +40,7 @@ param (
         [Parameter(Mandatory=$false, ParameterSetName='Office Options')][switch] $DeviceBasedLicensing,
         [Parameter(Mandatory=$false, ParameterSetName='Office Options')][switch] $Update,
         [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()][ValidateSet("BetaChannel", "CurrentPreview", "Current", "MonthlyEnterprise", "SemiAnnualPreview", "SemiAnnual", "Broad", "Targeted")][string]$Channel,
-        [Parameter(Mandatory=$false)][ValidateNotNullOrEmpty()][ValidateSet("en-us", "fr-fr", "zh-cn", "zh-tw", "de-de", "it-it")][string]$Language,
+        [Parameter(Mandatory=$false)][ValidateNotNullOrEmpty()][ValidateSet("en-us", "fr-fr", "zh-cn", "zh-tw", "de-de", "it-it, hu-hu")][string]$Language,
         [Parameter(Mandatory=$false)][switch]$SetLanguageDefault,
         [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()][string]$CompanyValue,
         [Parameter(Mandatory=$false)][switch]$BuildConfigXMLOnly

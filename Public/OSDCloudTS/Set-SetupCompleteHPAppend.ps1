@@ -7,7 +7,7 @@
     $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1File)"
 
     if (Test-Path -Path $PSFilePath){
-        #Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')"
+        #Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1')"
         Add-Content -Path $PSFilePath 'Write-Output "Running HP Tools in Setup Complete | Time: $($(Get-Date).ToString("hh:mm:ss"))"'
         if ($Global:OSDCloud.HPIADrivers -eq $true){
             Add-Content -Path $PSFilePath 'Write-Host "Running HPIA for Drivers [Invoke-HPIA]" -ForegroundColor Magenta'

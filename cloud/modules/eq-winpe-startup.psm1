@@ -6,9 +6,9 @@
 .NOTES
     Version 22.9.13.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/eq-winpe-startup.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/eq-winpe-startup.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/eq-winpe-startup.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/eq-winpe-startup.psm1')
 #>
 
 #region Functions  
@@ -54,7 +54,7 @@ function osdcloud-StartWinPE {
         }
         if ($Azure) {
             $KeyVault = $false
-            Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+            Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
             osdcloud-InstallPowerShellModule -Name 'AzureAD'
             osdcloud-InstallPowerShellModule -Name 'Az.Accounts'
             osdcloud-InstallPowerShellModule -Name 'Az.KeyVault'
@@ -64,7 +64,7 @@ function osdcloud-StartWinPE {
             osdcloud-InstallPowerShellModule -Name 'Microsoft.Graph.DeviceManagement'
         }
         if ($KeyVault) {
-            Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+            Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
             osdcloud-InstallPowerShellModule -Name 'Az.Accounts'
             osdcloud-InstallPowerShellModule -Name 'Az.KeyVault'
         }

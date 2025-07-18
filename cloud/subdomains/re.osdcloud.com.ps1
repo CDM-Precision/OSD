@@ -21,7 +21,7 @@
 .NOTES
     Version 22.9.13.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/re.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/re.osdcloud.com.ps1
 .EXAMPLE
 #>
 [CmdletBinding()]
@@ -54,7 +54,7 @@ else {
 Write-Host -ForegroundColor DarkGray "$ScriptName $ScriptVersion $WindowsPhase"
 
 #Load OSDCloud Functions
-Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
 
 #endregion
 #=================================================

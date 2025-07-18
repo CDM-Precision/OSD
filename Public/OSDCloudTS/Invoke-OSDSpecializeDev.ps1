@@ -176,11 +176,11 @@ function Invoke-OSDSpecializeDev {
         write-host "Specialize Stage - Extra Addons" -ForegroundColor Green
         $WarningPreference = "SilentlyContinue"
         $VerbosePreference = "SilentlyContinue"
-        #Invoke-Expression (Invoke-RestMethod -Uri 'functions.osdcloud.com')
+        #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1')
         if ($ExtrasJSON.Addons.NetFx3 -eq $true){
             Write-Host -ForegroundColor DarkGray "========================================================================="
             Write-Host -ForegroundColor DarkGray "Installing NetFX3"
-            Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_oobe.psm1')
+            Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/_oobe.psm1')
             osdcloud-NetFX
         }
     }
@@ -189,7 +189,7 @@ function Invoke-OSDSpecializeDev {
         write-host "Specialize Stage - Extra Addons" -ForegroundColor Green
         $WarningPreference = "SilentlyContinue"
         $VerbosePreference = "SilentlyContinue"
-        #Invoke-Expression (Invoke-RestMethod -Uri 'functions.osdcloud.com')
+        #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1')
         if ($ExtrasJSON.Addons.Pause -eq $true){
             Write-Host -ForegroundColor DarkGray "========================================================================="
             Write-Host -ForegroundColor DarkGray "Pausing Specialize"
@@ -205,8 +205,8 @@ function Invoke-OSDSpecializeDev {
             $VerbosePreference = "SilentlyContinue"
             import-module -name "HPCMSL"
             get-module -Name "HPCMSL"
-            #Invoke-Expression (Invoke-RestMethod -Uri 'functions.osdcloud.com')
-            #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')
+            #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1')
+            #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1')
             
             #osdcloud-SetExecutionPolicy -WarningAction SilentlyContinue
             #osdcloud-InstallPackageManagement -WarningAction SilentlyContinue
@@ -256,8 +256,8 @@ function Invoke-OSDSpecializeDev {
         if ($DellJSON){
             write-host "Specialize Stage - Dell Enterprise Devices" -ForegroundColor Green
             $WarningPreference = "SilentlyContinue"
-            #Invoke-Expression (Invoke-RestMethod -Uri 'functions.osdcloud.com')
-            Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/devicesdell.psm1')
+            #Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1')
+            Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/devicesdell.psm1')
             if ($DellJSON.Updates.DCUInstall -eq $true){
                 Write-Host -ForegroundColor DarkGray "========================================================================="
                 Write-Host "Installing Dell Command Update" -ForegroundColor Cyan

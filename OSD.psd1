@@ -261,7 +261,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/OSDeploy/OSD'
 
         # A URL to an icon representing this module.
-        IconUri = 'https://raw.githubusercontent.com/OSDeploy/OSD/master/OSD.png'
+        IconUri = 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/OSD.png'
 
         # ReleaseNotes of this module
         ReleaseNotes = 'https://osd.osdeploy.com'

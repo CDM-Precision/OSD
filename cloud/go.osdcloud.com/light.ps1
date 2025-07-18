@@ -25,7 +25,7 @@ powershell iex (irm raw.osdcloud.com/tasksequences/light.ps1)
 .NOTES
     Version 22.9.13.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/tasksequences/light.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/tasksequences/light.ps1
 .EXAMPLE
     powershell iex (irm raw.osdcloud.com/tasksequences/light.ps1)
 #>
@@ -56,7 +56,7 @@ else {
 Write-Host -ForegroundColor DarkGray "$ScriptName $ScriptVersion $WindowsPhase"
 
 #Load OSDCloud Functions
-Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1")
 
 #endregion
 #=================================================

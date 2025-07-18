@@ -7,15 +7,15 @@
     This module is designed to work in WinPE or Full
     This module is for HP Devices and leveraged HP Tools
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1')
 #>
 #=================================================
 #region Functions
 
 #Some Dependancies on these Functions
-Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1')
+Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/_anywhere.psm1')
 
 function osdcloud-addserviceui {
     [CmdletBinding()]
@@ -843,9 +843,9 @@ function osdcloud-HPSetupCompleteAppend {
     $PSFilePath = "$($RunScript.Path)\$($RunScript.ps1File)"
 
     if (Test-Path -Path $PSFilePath){
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')"
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/eq-winpe.psm1')"
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'functions.osdcloud.com' -ErrorAction SilentlyContinue)"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/deviceshp.psm1')"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/eq-winpe.psm1')"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/master/cloud/functions.ps1' -ErrorAction SilentlyContinue)"
         Add-Content -Path $PSFilePath "osdcloud-WinpeSetEnvironmentVariables"
         Add-Content -Path $PSFilePath "osdcloud-InstallModuleHPCMSL -ErrorAction SilentlyContinue"
         Add-Content -Path $PSFilePath 'Write-Host "Running HP Tools in SetupComplete" -ForegroundColor Green'

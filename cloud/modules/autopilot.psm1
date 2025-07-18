@@ -6,9 +6,9 @@
 .NOTES
     This module can be loaded in all Windows phases except WinPE
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/autopilot.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/autopilot.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/autopilot.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/master/cloud/modules/autopilot.psm1')
 #>
 #=================================================
 #region Functions
