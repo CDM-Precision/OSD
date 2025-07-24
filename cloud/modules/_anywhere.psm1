@@ -275,47 +275,62 @@ function osdcloud-InstallPowerShellModule {
         [System.Management.Automation.SwitchParameter]
         $Force
     )
-    # Do not install the Module by default
-    $InstallModule = $false
+    if($Name -ne "OSD")
+    {
+        # Do not install the Module by default
+        $InstallModule = $false
 
-    # Get the version from the local machine
-    $InstalledModule = Get-Module -Name $Name -ListAvailable -ErrorAction Ignore | Sort-Object Version -Descending | Select-Object -First 1
-    
-    # Get the version from PowerShell Gallery
-    $GalleryPSModule = Find-Module -Name $Name -ErrorAction Ignore -WarningAction Ignore
+        # Get the version from the local machine
+        $InstalledModule = Get-Module -Name $Name -ListAvailable -ErrorAction Ignore | Sort-Object Version -Descending | Select-Object -First 1
+        
+        # Get the version from PowerShell Gallery
+        $GalleryPSModule = Find-Module -Name $Name -ErrorAction Ignore -WarningAction Ignore
 
-    if ($InstalledModule) {
-        if (($GalleryPSModule.Version -as [version]) -gt ($InstalledModule.Version -as [version])) {
-            # The version in the gallery is newer than the installed version, so we need to install it
-            $InstallModule = $true
-        }
-    }
-    else {
-        # Get-Module did not find the module, so we need to install it
-        $InstallModule = $true
-    }
-
-    if ($InstallModule) {
-        if ($WindowsPhase -eq 'WinPE') {
-            Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
-            Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
-        }
-        elseif ($WindowsPhase -eq 'OOBE') {
-            Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
-            Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
+        if ($InstalledModule) {
+            if (($GalleryPSModule.Version -as [version]) -gt ($InstalledModule.Version -as [version])) {
+                # The version in the gallery is newer than the installed version, so we need to install it
+                $InstallModule = $true
+            }
         }
         else {
-            # Install the PowerShell Module in the OS
-            Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [CurrentUser]"
-            Install-Module $Name -Scope CurrentUser -Force -SkipPublisherCheck -AllowClobber
+            # Get-Module did not find the module, so we need to install it
+            $InstallModule = $true
+        }
+
+        if ($InstallModule) {
+            if ($WindowsPhase -eq 'WinPE') {
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
+                Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
+            }
+            elseif ($WindowsPhase -eq 'OOBE') {
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
+                Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
+            }
+            else {
+                # Install the PowerShell Module in the OS
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [CurrentUser]"
+                Install-Module $Name -Scope CurrentUser -Force -SkipPublisherCheck -AllowClobber
+            }
+        }
+        else {
+            # The module is already installed and up to date
+            Import-Module -Name $Name -Force
+            Write-Host -ForegroundColor Green "[+] $Name $($InstalledModule.Version)"
         }
     }
-    else {
-        # The module is already installed and up to date
-        Import-Module -Name $Name -Force
-        Write-Host -ForegroundColor Green "[+] $Name $($InstalledModule.Version)"
+    else{
+        $CDMModuleName = 'OSD'
+        Write-Host -ForegroundColor Yellow "[-] Install OSD(CDM) for Windows"
+        $Uri = 'https://github.com/CDM-Precision/OSD/archive/refs/heads/master.zip'
+        Invoke-WebRequest -UseBasicParsing -Uri $Uri -OutFile "$env:TEMP\osd.zip"
+        $null = New-Item -Path "$env:TEMP\$CDMModuleName" -ItemType Directory -Force
+        Expand-Archive -Path "$env:TEMP\osd.zip" -DestinationPath "$env:TEMP\$CDMModuleName"
+        $null = New-Item -Path "$env:ProgramFiles\WindowsPowerShell\Modules\$CDMModuleName" -ItemType Directory -ErrorAction SilentlyContinue
+        Move-Item -Path "$env:TEMP\$CDMModuleName" -Destination "$env:ProgramFiles\WindowsPowerShell\Modules\$CDMModuleName"
+        Import-Module $CDMModuleName -Force -Scope Global
     }
 }
+
 function osdcloud-RestartComputer {
     [CmdletBinding()]
     param ()
