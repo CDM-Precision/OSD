@@ -288,6 +288,34 @@ if (-not (Get-Command 'curl.exe' -ErrorAction SilentlyContinue)) {
 #endregion
 
 #region WinPE PowerShell Module OSD
+if($WindowsPhase -eq 'WinPE'){
+    $InstallModule = $false
+    $PSModuleName = 'OSD'
+    $InstalledModule = Get-Module -Name $PSModuleName -ListAvailable -ErrorAction Ignore | Sort-Object Version -Descending | Select-Object -First 1
+
+    if(-not $InstalledModule)
+    {
+        Write-Host -ForegroundColor Yellow "[-] Install OSD(CDM) for Windows"
+        $Uri = 'https://github.com/CDM-Precision/OSD/archive/refs/heads/master.zip'
+        Invoke-WebRequest -UseBasicParsing -Uri $Uri -OutFile "$env:TEMP\osd.zip"
+        $null = New-Item -Path "$env:TEMP\$PSModuleName" -ItemType Directory -Force
+        Expand-Archive -Path "$env:TEMP\osd.zip" -DestinationPath "$env:TEMP\$PSModuleName"
+        $null = New-Item -Path "$env:ProgramFiles\WindowsPowerShell\Modules\$PSModuleName" -ItemType Directory -ErrorAction SilentlyContinue
+        Move-Item -Path "$env:TEMP\$PSModuleName" -Destination "$env:ProgramFiles\WindowsPowerShell\Modules\$PSModuleName"
+        Import-Module $PSModuleName -Force -Scope Global
+    }
+    else
+    {
+        Write-Host -ForegroundColor Green "[+] Installed OSD(CDM) for Windows"
+    }
+    if($InstalledModule)
+    {
+        Write-Host -ForegroundColor Green "[+] $PSModuleName $($GalleryPSModule.Version)(CDM)"
+    }
+}
+
+#original
+<#
 if ($WindowsPhase -eq 'WinPE') {
     $InstallModule = $false
     $PSModuleName = 'OSD'
@@ -307,7 +335,7 @@ if ($WindowsPhase -eq 'WinPE') {
             Write-Host -ForegroundColor Green "[+] $PSModuleName $($GalleryPSModule.Version)"
         }
     }
-}
+}#>
 #endregion
 
 #region PowerShell Module Pester
