@@ -276,7 +276,7 @@ if ($PowerShellGallery.InstallationPolicy -eq 'Trusted') {
 
 #region Install Curl
 if (-not (Get-Command 'curl.exe' -ErrorAction SilentlyContinue)) {
-    Write-Host -ForegroundColor Yellow "[-] Install Curl for Windows"
+    Write-Host -ForegroundColor Yellow "[-] Install Curl for Windows (PWSH.LIVE)"
     $Uri = 'https://curl.se/windows/latest.cgi?p=win64-mingw.zip'
     Invoke-WebRequest -UseBasicParsing -Uri $Uri -OutFile "$env:TEMP\curl.zip"
 
