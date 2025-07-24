@@ -990,6 +990,8 @@
 
                         #$OSDCloudUsbOS = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory "$OSDownloadChildPath" -DestinationName $Global:OSDCloud.ImageFileName
                         $downloadFilePath = Join-Path -Path $OSDownloadChildPath -ChildPath $Global:OSDCloud.ImageFileName
+                        $Global:CDMLOGPATH = "$OSDownloadChildPath\CDM.log"
+                        $Global:CDMLOGTYPE = "Full"
                         $OSDCloudUsbOS = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         if ($OSDCloudUsbOS) {
                             Write-SectionHeader "Copying Offline OS to C:\OSDCloud\OS\$($OSDCloudUsbOS.Name)"
