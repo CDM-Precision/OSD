@@ -217,7 +217,7 @@ function osdcloud-InstallPackageManagement {
     if ($WindowsPhase -eq 'WinPE') {
         $InstalledModule = Import-Module PackageManagement -PassThru -ErrorAction Ignore
         if (-not $InstalledModule) {
-            Write-Host -ForegroundColor Yellow "[-] Install PackageManagement 1.4.8.1"
+            Write-Host -ForegroundColor Yellow "[-] Install PackageManagement 1.4.8.1 (asd)"
             $PackageManagementURL = "https://psg-prod-eastus.azureedge.net/packages/packagemanagement.1.4.8.1.nupkg"
             Invoke-WebRequest -UseBasicParsing -Uri $PackageManagementURL -OutFile "$env:TEMP\packagemanagement.1.4.8.1.zip"
             $null = New-Item -Path "$env:TEMP\1.4.8.1" -ItemType Directory -Force
@@ -299,23 +299,23 @@ function osdcloud-InstallPowerShellModule {
 
         if ($InstallModule) {
             if ($WindowsPhase -eq 'WinPE') {
-                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers] (qwe)"
                 Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
             }
             elseif ($WindowsPhase -eq 'OOBE') {
-                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers]"
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [AllUsers] (rtz)"
                 Install-Module $Name -Scope AllUsers -Force -SkipPublisherCheck -AllowClobber
             }
             else {
                 # Install the PowerShell Module in the OS
-                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [CurrentUser]"
+                Write-Host -ForegroundColor Yellow "[-] $Name $($GalleryPSModule.Version) [CurrentUser] (wer)"
                 Install-Module $Name -Scope CurrentUser -Force -SkipPublisherCheck -AllowClobber
             }
         }
         else {
             # The module is already installed and up to date
             Import-Module -Name $Name -Force
-            Write-Host -ForegroundColor Green "[+] $Name $($InstalledModule.Version)"
+            Write-Host -ForegroundColor Green "[+] $Name $($InstalledModule.Version) (ert)"
         }
     }
     else{
