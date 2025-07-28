@@ -1005,8 +1005,12 @@
                         #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -DestinationName $Global:OSDCloud.ImageFileName -ErrorAction Stop
                         
                         $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
+                        if(!(Test-Path -Path 'C:\OSDCloud\OS'))
+                        {
+                            New-Item -ItemType Directory -Path 'C:\OSDCloud\OS' -Force
+                        }
                         Write-DarkGrayHost "Valami else ag"
-                        $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile 'C:\OSDCloud\OS' -RetryCount 10
+                        $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileDestination -OutFile $downloadFilePath -RetryCount 10
                     }
                 }
                 else {
