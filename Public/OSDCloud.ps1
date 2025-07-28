@@ -1010,7 +1010,7 @@
                             New-Item -ItemType Directory -Path 'C:\OSDCloud\OS' -Force
                         }
                         Write-DarkGrayHost "Valami else ag"
-                        $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileDestination -OutFile $downloadFilePath -RetryCount 10
+                        $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadFilePath -RetryCount 10
                     }
                 }
                 else {
