@@ -1018,7 +1018,8 @@
                     #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -ErrorAction Stop
                         $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                         Write-DarkGrayHost "Masike else ag"
-                        $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
+                        Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
+                        $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
                 }
                 $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                 if (!(Test-Path $downloadFilePath)) {
