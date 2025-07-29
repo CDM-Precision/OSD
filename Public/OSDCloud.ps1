@@ -1011,6 +1011,7 @@
                         }
                         Write-DarkGrayHost "Valami else ag"
                         $Global:OSDCloud.ImageFileDestination = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadFilePath -RetryCount 10
+                        Write-DarkGrayHost "ImageFileDestination: $($Global:OSDCloud.ImageFileDestination)"
                     }
                 }
                 else {
