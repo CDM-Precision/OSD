@@ -991,7 +991,7 @@
                         Write-Host -ForegroundColor Yellow "[$(Get-Date -format G)] Downloading OSDCloud Offline OS $OSDownloadChildPath"
 
                         #$OSDCloudUsbOS = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory "$OSDownloadChildPath" -DestinationName $Global:OSDCloud.ImageFileName
-                        $downloadFilePath = Join-Path -Path $OSDownloadChildPath -ChildPath $Global:OSDCloud.ImageFileName
+                        $downloadedFilePath = Join-Path -Path $OSDownloadChildPath -ChildPath $Global:OSDCloud.ImageFileName
                         Write-DarkGrayHost "TESZT UZENET"
                         $OSDCloudUsbOS = Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         if ($OSDCloudUsbOS) {
@@ -1004,7 +1004,7 @@
                     else {
                         #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -DestinationName $Global:OSDCloud.ImageFileName -ErrorAction Stop
                         
-                        $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
+                        $downloadedFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                         if(!(Test-Path -Path 'C:\OSDCloud\OS'))
                         {
                             New-Item -ItemType Directory -Path 'C:\OSDCloud\OS' -Force
@@ -1017,14 +1017,14 @@
                 }
                 else {
                     #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -ErrorAction Stop
-                        $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
+                        $downloadedFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                         Write-DarkGrayHost "Masike else ag"
                         Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
                         Write-DarkGrayHost "AS2D ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                 }
-                $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
-                if (!(Test-Path $downloadFilePath)) {
+                $downloadedFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
+                if (!(Test-Path $downloadedFilePath)) {
                     $Global:OSDCloud.ImageFileDestination = Get-ChildItem -Path 'C:\OSDCloud\OS\*' -Include *.wim,*.esd,*.iso | Select-Object -First 1
                 }
             }
