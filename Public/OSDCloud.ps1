@@ -1020,6 +1020,7 @@
                         Write-DarkGrayHost "Masike else ag"
                         Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
+                        Write-DarkGrayHost "ASD ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                 }
                 $downloadFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                 if (!(Test-Path $downloadFilePath)) {
