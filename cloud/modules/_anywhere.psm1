@@ -396,7 +396,7 @@ function osdcloud-UpdateModuleFilesManually {
     $OSDCloudGUIDevProjectPath = "Projects\OSDCloudDev"
     $OSDCloudGUIProjectPath = "Projects\OSDCloudGUI"
     $OSDCloudFunctionsPath = "Public\Functions\OSDCloud"
-    $GitHubURI = "https://raw.githubusercontent.com/OSDeploy/OSD/master"
+    $GitHubURI = "https://raw.githubusercontent.com/CDM-Precision/OSD/main"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.ps1"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.xaml" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.xaml"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIProjectPath/MainWindow.ps1"
