@@ -25,7 +25,7 @@ powershell iex (irm raw.osdcloud.com/tasksequences/light.ps1)
 .NOTES
     Version 22.9.13.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/tasksequences/light.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/tasksequences/light.ps1
 .EXAMPLE
     powershell iex (irm raw.osdcloud.com/tasksequences/light.ps1)
 #>

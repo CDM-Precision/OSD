@@ -25,7 +25,7 @@ powershell iex (irm bh.osdcloud.com)
 .NOTES
     Version 23.2.28.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/subdomains/bh.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/subdomains/bh.osdcloud.com.ps1
 .EXAMPLE
     powershell iex (irm bh.osdcloud.com)
 #>

@@ -26,7 +26,7 @@ powershell iex (irm tpm.osdcloud.com)
 .NOTES
     Version 24.2.24.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/subdomains/tpm.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/subdomains/tpm.osdcloud.com.ps1
 .EXAMPLE
     powershell iex (irm tpm.osdcloud.com)
 #>

@@ -6,9 +6,9 @@
 .NOTES
     This module can be loaded in all Windows phases
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/_anywhere.psm1
 .EXAMPLE
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/_anywhere.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/_anywhere.psm1')
 #>
 #=================================================
 #region Functions
@@ -407,7 +407,7 @@ function osdcloud-UpdateModuleFilesManually {
             Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/OSD.psd1" -OutFile "$ModulePath/OSD.psd1"
         }
     }
-    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/modules/deviceshp.psm1')}
+    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/deviceshp.psm1')}
 }
 #endregion
 #=================================================

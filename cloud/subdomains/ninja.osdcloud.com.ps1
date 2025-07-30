@@ -26,7 +26,7 @@ powershell iex (irm ninja.osdcloud.com)
 .NOTES
     Version 24.9.6.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/ninja.osdcloud.com.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/ninja.osdcloud.com.ps1
 .EXAMPLE
     powershell iex (irm ninja.osdcloud.com)
 #>

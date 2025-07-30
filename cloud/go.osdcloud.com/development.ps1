@@ -25,7 +25,7 @@ powershell iex(irm go.osdcloud.com/development)
 .NOTES
     Version 22.9.13.1
 .LINK
-    https://raw.githubusercontent.com/OSDeploy/OSD/master/cloud/tasksequences/development.ps1
+    https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/tasksequences/development.ps1
 .EXAMPLE
     powershell iex (irm go.osdcloud.com/development)
 #>
