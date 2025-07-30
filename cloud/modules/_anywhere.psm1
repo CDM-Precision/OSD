@@ -316,6 +316,53 @@ function osdcloud-InstallPowerShellModule {
         Write-Host -ForegroundColor Green "[+] $Name $($InstalledModule.Version)"
     }
 }
+
+function osdcloud-InstallCDMModule {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
+
+        [Parameter(Mandatory = $true)]
+        [System.Uri]
+        $URL,
+
+        [System.Management.Automation.SwitchParameter]
+        $Force
+    )
+
+    Write-Host -ForegroundColor Yellow "[-] CDM - Install-Module $Name [CurrentUser]"
+    $zipPath = "$env:TEMP\$Name.zip"
+    $extractPath = "$env:TEMP\$Name"
+    $modulePath = "$env:ProgramFiles\WindowsPowerShell\Modules\$Name"
+
+    #download zip
+    Invoke-WebRequest -Uri $URL -OutFile $zipPath
+
+    #extract zip
+    if (-not (Test-Path -Path $extractPath)) {
+        New-Item -Path $extractPath -ItemType Directory -Force
+    }
+    Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+
+    $sourcePath = Get-ChildItem -Path $extractPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+
+    # remove dest if exists
+    if (Test-Path $modulePath) {
+        Remove-Item -Path $modulePath -Recurse -Force
+    }
+
+    # create dest dir
+    New-Item -Path $modulePath -ItemType Directory -Force | Out-Null
+
+    # move
+    Move-Item -Path "$($sourcePath.FullName)\*" -Destination $modulePath
+
+    # import module
+    Import-Module $CDMModuleName -Force -Scope Global
+
+}
 function osdcloud-RestartComputer {
     [CmdletBinding()]
     param ()
