@@ -34,6 +34,7 @@ powershell iex (irm functions.osdcloud.com)
 param()
 $ScriptName = 'functions.osdcloud.com'
 $ScriptVersion = '24.2.22.1'
+$Branch = 'main'
 
 #region Initialize
 if ($env:SystemDrive -eq 'X:') {
@@ -103,18 +104,18 @@ if ($Manufacturer -match "Dell"){
 
 #region Load Modules
 if ($WindowsPhase -eq 'WinPE') {
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/_anywhere.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/eq-winpe.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/eq-winpe-startup.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/azosdcloudbeta.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/azosdpad.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/osdcloudazure.psm1')
-    Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/secrets.psm1')
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/_anywhere.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/eq-winpe.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/eq-winpe-startup.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/azosdcloudbeta.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/azosdpad.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/osdcloudazure.psm1")
+    Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/secrets.psm1")
     if ($HPEnterprise -eq $true) {
-        Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/deviceshp.psm1')
+        Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/deviceshp.psm1")
     }
     if ($DellEnterprise -eq $true) {
-        Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/devicesdell.psm1')
+        Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$Branch/cloud/modules/devicesdell.psm1")
     }
 }
 if ($WindowsPhase -eq 'OOBE') {
