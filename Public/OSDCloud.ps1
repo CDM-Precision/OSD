@@ -1009,7 +1009,7 @@
                             New-Item -ItemType Directory -Path 'C:\OSDCloud\OS' -Force
                         }
                         Write-DarkGrayHost "Valami else ag"
-                        Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
+                        Save-WebFile2 -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
                         Write-DarkGrayHost "ASD ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                     }
@@ -1018,7 +1018,7 @@
                     #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -ErrorAction Stop
                     $downloadedFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
                         Write-DarkGrayHost "Masike else ag"
-                        Start-FileDownloadWithRetry -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
+                        Save-WebFile2 -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
                         Write-DarkGrayHost "AS2D ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                 }
