@@ -360,7 +360,7 @@ function osdcloud-InstallCDMModule {
     Move-Item -Path "$($sourcePath.FullName)\*" -Destination $modulePath
 
     # import module
-    Import-Module $CDMModuleName -Force -Scope Global
+    Import-Module $Name -Force -Scope Global
 
 }
 function osdcloud-RestartComputer {
