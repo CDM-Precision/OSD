@@ -684,22 +684,39 @@ function osdcloud-InstallModuleMSGraphDeviceManagement {
 function osdcloud-InstallModuleOSD {
     [CmdletBinding()]
     param ()
-    $PSModuleName = 'OSD'
-    $InstalledModule = Get-Module -Name $PSModuleName -ListAvailable -ErrorAction Ignore | Sort-Object Version -Descending | Select-Object -First 1
-    $GalleryPSModule = Find-Module -Name $PSModuleName -ErrorAction Ignore -WarningAction Ignore
+    
+    $Name = "OSD"
+    $url = "https://github.com/CDM-Precision/OSD/archive/refs/heads/main.zip"
+    
+    Write-Host -ForegroundColor Yellow "[-] CDM - Install-Module $Name [CurrentUser]"
+    $zipPath = "$env:TEMP\$Name.zip"
+    $extractPath = "$env:TEMP\$Name"
+    $modulePath = "$env:ProgramFiles\WindowsPowerShell\Modules\$Name"
 
-    if ($GalleryPSModule) {
-        if (($GalleryPSModule.Version -as [version]) -gt ($InstalledModule.Version -as [version])) {
-            Write-Host -ForegroundColor Yellow "[-] Install-Module $PSModuleName $($GalleryPSModule.Version)"
-            Install-Module $PSModuleName -Scope AllUsers -Force -SkipPublisherCheck
-            Import-Module $PSModuleName -Force
-        }
+    #download zip
+    Invoke-WebRequest -Uri $URL -OutFile $zipPath
+
+    #extract zip
+    if (-not (Test-Path -Path $extractPath)) {
+        New-Item -Path $extractPath -ItemType Directory -Force
     }
-    $InstalledModule = Get-Module -Name $PSModuleName -ListAvailable -ErrorAction Ignore | Sort-Object Version -Descending | Select-Object -First 1
-    if ($GalleryPSModule) {
-        if (($InstalledModule.Version -as [version]) -ge ($GalleryPSModule.Version -as [version])) {
-            Write-Host -ForegroundColor Green "[+] $PSModuleName $($GalleryPSModule.Version)"
-        }
+    Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+
+    $sourcePath = Get-ChildItem -Path $extractPath | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+
+    # remove dest if exists
+    if (Test-Path $modulePath) {
+        Remove-Item -Path $modulePath -Recurse -Force
     }
+
+    # create dest dir
+    New-Item -Path $modulePath -ItemType Directory -Force | Out-Null
+
+    # move
+    Move-Item -Path "$($sourcePath.FullName)\*" -Destination $modulePath
+
+    # import module
+    Import-Module $Name -Force -Scope Global
+
 }
 #endregion

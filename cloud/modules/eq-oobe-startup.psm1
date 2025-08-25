@@ -87,7 +87,7 @@ function osdcloud-StartOOBE {
     }
     else {
         osdcloud-InstallCDMModule -Name OSD -URL "https://github.com/CDM-Precision/OSD/archive/refs/heads/main.zip"
-        osdcloud-InstallCDMModule -Name DownloadFile -URL "https://github.com/CDM-Precision/CDM-DownloadFile/archive/refs/heads/main.zip"
+        #osdcloud-InstallCDMModule -Name DownloadFile -URL "https://github.com/CDM-Precision/CDM-DownloadFile/archive/refs/heads/main.zip"
         #Add Azure KeuVault Support
         if ($Azure) {
             osdcloud-InstallPowerShellModule -Name 'Az.Accounts'
