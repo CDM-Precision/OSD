@@ -48,7 +48,7 @@ function Get-FinalRedirectUrl {
 
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message "${CmdletName}"
+        Write-Host "${CmdletName}"
     }
 
     Process {
@@ -62,12 +62,12 @@ function Get-FinalRedirectUrl {
             if ($resp.ResponseUri.OriginalString -eq $Url) {
                 return $Url
             } else {
-                Write-Verbose -Message "Redirected url: $($resp.ResponseUri.OriginalString)"
+                Write-Host "Redirected url: $($resp.ResponseUri.OriginalString)"
                 return $resp.ResponseUri.OriginalString
             }
         }
         catch {
-            Write-Verbose -Message "Error processing URL '$Url': $_"
+            Write-Host "Error processing URL '$Url': $_"
             throw $_
         }
         finally {
@@ -133,7 +133,7 @@ function Get-CurrentFileSize {
     )
     Begin{
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-         Write-Verbose -Message "${CmdletName}"
+         Write-Host "${CmdletName}"
     }
     Process{
         if (Test-Path -Path $FilePath) {
@@ -219,12 +219,12 @@ function Test-FileIntegrity {
 
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
     }
 
     Process {
         try {
-            Write-Verbose -Message "Starting file integrity check..."
+            Write-Host "Starting file integrity check..."
             
             # Convert and validate path
             $cpath = Convert-Path $downloadedFilePath
@@ -234,17 +234,17 @@ function Test-FileIntegrity {
 
             # Check file size
             $actualSize = (Get-Item -Path $cpath).Length
-            Write-Verbose -Message "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
+            Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
             
             if ($fileSize -ne $actualSize) {
                 Remove-DownloadedFile -downloadedFilePath $downloadedFilePath
                 throw "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes"
             }
 
-            Write-Verbose -Message "File size verification passed" 
+            Write-Host "File size verification passed" 
 
             # Check file hash if size matches
-            Write-Verbose -Message "Starting hash verification..."
+            Write-Host "Starting hash verification..."
             $hashResult = Test-FileHashIntegrity -Checksum $Checksum -ChecksumType $ChecksumType -downloadedFilePath $downloadedFilePath
             
             if (-not $hashResult) {
@@ -252,11 +252,11 @@ function Test-FileIntegrity {
                 throw "File hash verification failed"
             }
 
-            Write-Verbose -Message "File integrity check completed successfully"
+            Write-Host "File integrity check completed successfully"
             return $true
         }
         catch {
-            Write-Warning -Message "File integrity check failed: $_"
+            Write-Host "File integrity check failed: $_"
             throw $_
         }
     }
@@ -351,30 +351,30 @@ function Test-FileHashIntegrity {
 
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
     }
 
     Process {
         try {
             $cpath = Convert-Path $downloadedFilePath
-            Write-Verbose -Message "Calculating $ChecksumType hash for file: $cpath"
+            Write-Host "Calculating $ChecksumType hash for file: $cpath"
             
             $localFileHash = (Get-FileHash -Algorithm $ChecksumType -Path $cpath -ErrorAction Stop).Hash
-            Write-Verbose -Message "Calculated hash: $localFileHash"
-            Write-Verbose -Message "Expected hash: $Checksum"
+            Write-Host "Calculated hash: $localFileHash"
+            Write-Host "Expected hash: $Checksum"
 
             $result = $Checksum.ToUpper() -eq $localFileHash.ToUpper()
             
             if ($result) {
-                Write-Verbose -Message "Hash verification successful"
+                Write-Host "Hash verification successful"
             } else {
-                Write-Warning -Message "Hash verification failed"
+                Write-Host "Hash verification failed"
             }
             
             return $result
         }
         catch {
-            Write-Error -Message "Error during hash verification: $_"
+            Write-Host "Error during hash verification: $_"
             throw $_
         }
     }
@@ -469,30 +469,30 @@ function Test-PartialFileHash {
 
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
     }
 
     Process {
         try {
-            Write-Verbose -Message "Starting partial hash verification for: $FilePath"
+            Write-Host "Starting partial hash verification for: $FilePath"
             
             $computedHash = (Get-FileHash -Algorithm $ChecksumType -Path $FilePath -ErrorAction Stop).Hash
-            Write-Verbose -Message "Computed $ChecksumType hash: $computedHash"
-            Write-Verbose -Message "Expected hash: $Checksum"
+            Write-Host "Computed $ChecksumType hash: $computedHash"
+            Write-Host "Expected hash: $Checksum"
 	
 			$result = $Checksum.ToUpper() -eq $computedHash.ToUpper()
             
             if ($result) {
-                Write-Verbose -Message "Hash verification successful"
+                Write-Host "Hash verification successful"
             } else {
-                Write-Verbose -Message "Hash verification failed"
-                Write-Verbose -Message "Expected: $Checksum`nActual: $computedHash"
+                Write-Host "Hash verification failed"
+                Write-Host "Expected: $Checksum`nActual: $computedHash"
             }
             
             return $result
         }
         catch {
-            Write-Verbose -Message "Error during partial hash verification: $_"
+            Write-Host "Error during partial hash verification: $_"
             return $false
         }
     }
@@ -562,25 +562,25 @@ function Remove-DownloadedFile {
 
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
     }
 
     Process {
         try {
             if (Test-Path -Path $downloadedFilePath) {
-                Write-Verbose -Message "Attempting to remove: $downloadedFilePath"
+                Write-Host "Attempting to remove: $downloadedFilePath"
                 
                 if ($PSCmdlet.ShouldProcess($downloadedFilePath, "Remove file/directory")) {
                     Remove-Item -Path $downloadedFilePath -Force -Recurse -ErrorAction Stop
-                    Write-Verbose -Message "Successfully removed: $downloadedFilePath"
+                    Write-Host "Successfully removed: $downloadedFilePath"
                 }
             }
             else {
-                Write-Verbose -Message "Path not found, nothing to remove: $downloadedFilePath"
+                Write-Host "Path not found, nothing to remove: $downloadedFilePath"
             }
         }
         catch {
-            Write-Verbose -Message "Failed to remove $downloadedFilePath : $_"
+            Write-Host "Failed to remove $downloadedFilePath : $_"
             throw $_
         }
     }
@@ -647,17 +647,17 @@ function Invoke-FileDownload {
     )
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
 
         $isPartialFileValid = $false
         if ($Validate -and (Test-Path -Path $OutFile)) {
-            Write-Verbose -Message "Partially downloaded file found. Verifying hash..."
+            Write-Host "Partially downloaded file found. Verifying hash..."
             $isPartialFileValid = Test-PartialFileHash -FilePath $OutFile -Checksum $Checksum -ChecksumType $ChecksumType
             if ($isPartialFileValid) {
-                Write-Verbose -Message "Partial file is valid. Skipping download..."
+                Write-Host "Partial file is valid. Skipping download..."
                 return $true
             } else {
-                Write-Verbose -Message "Partial file is corrupted. Deleting and restarting download..."
+                Write-Host "Partial file is corrupted. Deleting and restarting download..."
                 Remove-DownloadedFile -downloadedFilePath $OutFile
             }
         }
@@ -678,31 +678,31 @@ function Invoke-FileDownload {
 					}
                     #$downloadSize = $requestedFile.'Content-Length'
                     $downloadSize = [Int64]::Parse(($requestedFile.'Content-Length' | Select-Object -First 1))
-                    Write-Verbose -Message "Selected download method: Invoke-Webrequest"
-                    Write-Verbose -Message "Start downloading from $link"
-                    Write-Verbose -Message "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB"
+                    Write-Host "Selected download method: Invoke-Webrequest"
+                    Write-Host "Start downloading from $link"
+                    Write-Host "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB"
                     Invoke-WebRequest -Uri $link -OutFile $OutFile
                 }
                 catch {
-                    Write-Verbose -Message "Failed to transfer with Invoke-WebRequest. Here is the error message:"
-                    Write-Verbose -Message "$($error[0].exception.message)"
+                    Write-Host "Failed to transfer with Invoke-WebRequest. Here is the error message:"
+                    Write-Host "$($error[0].exception.message)"
                     throw
                 }
             #}
 
             If (Test-Path -Path $OutFile) {
-                Write-Verbose -Message "Time taken: $((Get-Date).Subtract($start_time).Minutes) minute(s) $((Get-Date).Subtract($start_time).Seconds) second(s)"
-                Write-Verbose -Message "Downloaded size: $([math]::Round((Get-ItemProperty -Path $OutFile).Length / 1MB, 2)) MB"
-                Write-Verbose -Message "Downloaded file location: $OutFile"
+                Write-Host "Time taken: $((Get-Date).Subtract($start_time).Minutes) minute(s) $((Get-Date).Subtract($start_time).Seconds) second(s)"
+                Write-Host "Downloaded size: $([math]::Round((Get-ItemProperty -Path $OutFile).Length / 1MB, 2)) MB"
+                Write-Host "Downloaded file location: $OutFile"
 
                 if ($Validate) {
-                    Write-Verbose -Message "File integrity check starting"
+                    Write-Host "File integrity check starting"
                     Test-FileIntegrity -fileSize $downloadSize -downloadedFilePath $OutFile -Checksum $Checksum -ChecksumType $Checksumtype | Out-Null
                 }
                 return $true
             }
         } catch {
-            Write-Verbose -Message "Download failed: $($_.Exception.Message)"
+            Write-Host "Download failed: $($_.Exception.Message)"
             throw
         }
         return $false
@@ -777,30 +777,30 @@ function Save-WebFile2 {
     )
     Begin {
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
-        Write-Verbose -Message ${CmdletName}
+        Write-Host ${CmdletName}
         $attempt = 1
     }
     Process {
         while ($attempt -le $RetryCount) {
-            Write-Verbose -Message "Attempt $attempt of $RetryCount..."
+            Write-Host "Attempt $attempt of $RetryCount..."
             try {
                 $result = Invoke-FileDownload -URL $URL -OutFile $OutFile -Validate:$Validate -ChecksumType $ChecksumType -Checksum $Checksum
                 if ($result) {
-                    Write-Verbose -Message "Download verification succeeded on attempt $attempt."
+                    Write-Host "Download verification succeeded on attempt $attempt."
                     return
                 }
                 throw "Download failed without exception"
             } catch {
-                Write-Verbose -Message "Attempt $attempt failed: $($_.Exception.Message), URL = $URL"
+                Write-Host "Attempt $attempt failed: $($_.Exception.Message), URL = $URL"
                 $attempt++
                 if ($attempt -gt $RetryCount) {
                     if (Test-Path -Path $OutFile) {
-                       Write-Verbose -Message "Final attempt failed. Removing downloaded file..."
+                       Write-Host "Final attempt failed. Removing downloaded file..."
                         Remove-DownloadedFile -downloadedFilePath $OutFile
                     }
                     throw "Download failed after $RetryCount attempts."
                 }
-                Write-Verbose -Message "Retrying in 5 seconds..."
+                Write-Host "Retrying in 5 seconds..."
                 Start-Sleep -Seconds 5
             }
         }
@@ -872,7 +872,7 @@ function Save-WebFile {
         Remove-Item -Path $DestinationNewItem.FullName -Force | Out-Null
     }
     else {
-        Write-Warning "Unable to write to Destination Directory"
+        Write-Host "Unable to write to Destination Directory"
         Break
     }
     #=================================================
@@ -942,7 +942,7 @@ function Save-WebFile {
             Get-Item $DestinationFullName -Force
         }
         else {
-            Write-Warning "Could not download $DestinationFullName"
+            Write-Host "Could not download $DestinationFullName"
             $null
         }
         #=================================================
