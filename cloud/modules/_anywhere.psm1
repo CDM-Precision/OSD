@@ -360,7 +360,7 @@ function osdcloud-InstallCDMModule {
     Move-Item -Path "$($sourcePath.FullName)\*" -Destination $modulePath
 
     # import module
-    Import-Module $Name -Force -Scope Global
+    Import-Module "X:\Program Files\WindowsPowerShell\Modules\osd\osd.psd1" -Force -Scope Global
 
 }
 function osdcloud-RestartComputer {
