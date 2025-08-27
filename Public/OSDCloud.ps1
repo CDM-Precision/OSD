@@ -1008,19 +1008,19 @@
                         {
                             New-Item -ItemType Directory -Path 'C:\OSDCloud\OS' -Force
                         }
-                        Write-DarkGrayHost "Valami else ag"
+                        Write-DarkGrayHost -Message "Valami else ag"
                         Save-WebFile2 -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
-                        Write-DarkGrayHost "ASD ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
+                        Write-DarkGrayHost -Message "ASD ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                     }
                 }
                 else {
                     #$Global:OSDCloud.ImageFileDestination = Save-WebFile -SourceUrl $Global:OSDCloud.ImageFileUrl -DestinationDirectory 'C:\OSDCloud\OS' -ErrorAction Stop
                     $downloadedFilePath = Join-Path -Path 'C:\OSDCloud\OS' -ChildPath $Global:OSDCloud.ImageFileName
-                        Write-DarkGrayHost "Masike else ag"
+                        Write-DarkGrayHost -Message "Masike else ag"
                         Save-WebFile2 -URL $Global:OSDCloud.ImageFileUrl -OutFile $downloadedFilePath -RetryCount 10
                         $Global:OSDCloud.ImageFileDestination = Get-Item -Path $downloadedFilePath
-                        Write-DarkGrayHost "AS2D ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
+                        Write-DarkGrayHost -Message "AS2D ImageDest: [($Global:OSDCloud.ImageFileDestination)]"
                 }
                 if (!(Test-Path $Global:OSDCloud.ImageFileDestination.FullName)) {
                     $Global:OSDCloud.ImageFileDestination = Get-ChildItem -Path 'C:\OSDCloud\OS\*' -Include *.wim,*.esd,*.iso | Select-Object -First 1
