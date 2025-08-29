@@ -200,6 +200,52 @@ function Get-CurrentFileSize {
 .LINK
     about_Hash_Tables
 #>
+
+function Test-FileSize {
+     [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true)]
+        [ValidateScript({$_ -ge 0})]
+        [int64]$fileSize,
+        
+        [Parameter(Mandatory=$true, Position=1, ValueFromPipelineByPropertyName=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$downloadedFilePath
+    )
+    Begin {
+        [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
+        Write-Host ${CmdletName}
+    }
+
+    Process {
+        try {
+            Write-Host "Starting file integrity check..."
+            
+            # Convert and validate path
+            $cpath = Convert-Path $downloadedFilePath
+            if (-not (Test-Path -Path $cpath -PathType Leaf)) {
+                throw "File not found: $downloadedFilePath"
+            }
+
+            # Check file size
+            $actualSize = (Get-Item -Path $cpath).Length
+            Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
+            
+            if ($fileSize -ne $actualSize) {
+                Remove-DownloadedFile -downloadedFilePath $downloadedFilePath
+                throw "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes"
+            }
+
+            Write-Host "File size verification passed" 
+            return $true
+        }
+        catch {
+            Write-Host "File integrity check failed: $_"
+            throw $_
+        }
+    }
+}
+
 function Test-FileIntegrity {
     [CmdletBinding()]
     Param (
@@ -699,6 +745,10 @@ function Invoke-FileDownload {
                 if ($Validate) {
                     Write-Host "File integrity check starting"
                     Test-FileIntegrity -fileSize $downloadSize -downloadedFilePath $OutFile -Checksum $Checksum -ChecksumType $Checksumtype | Out-Null
+                }
+                else{
+                    Write-Host "Filesize check starting"
+                    Test-FileSize -fileSize $downloadSize -downloadedFilePath $OutFile | Out-Null
                 }
                 return $true
             }
