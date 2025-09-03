@@ -986,7 +986,7 @@
                     
                     Write-Host -ForegroundColor Yellow "Load Download module"
                     Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/CDM-DownloadFile/refs/heads/main/DownloadFile.psm1')
-                    1Write-Host -ForegroundColor Yellow "OK"
+                    Write-Host -ForegroundColor Yellow "OK"
 
                     if ($OSDCloudUSB -and $Global:OSDCloud.OSVersion -and $Global:OSDCloud.OSReleaseID) {
                         $OSDownloadChildPath = "$($OSDCloudUSB.DriveLetter):\OSDCloud\OS\$($Global:OSDCloud.OSVersion) $($Global:OSDCloud.OSReleaseID)"
