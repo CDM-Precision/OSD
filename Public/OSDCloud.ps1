@@ -890,7 +890,7 @@
                 $Global:OSDCloud.GetFeatureUpdate = $Global:OSDCloud.GetFeatureUpdate | Select-Object -Property CreationDate,KBNumber,Title,UpdateOS,UpdateBuild,UpdateArch,FileName, @{Name='SizeMB';Expression={[int]($_.Size /1024/1024)}},FileUri,Hash,AdditionalHash
                 $Global:OSDCloud.ImageFileName = $Global:OSDCloud.GetFeatureUpdate.FileName
                 $Global:OSDCloud.ImageFileUrl = $Global:OSDCloud.GetFeatureUpdate.FileUri
-                $Global:OSDCloud.OSImageIndex = 6
+                # $Global:OSDCloud.OSImageIndex = 6
             }
             else {
                 Write-Warning "[$(Get-Date -format G)] OSDCloud Failed"
@@ -1124,8 +1124,8 @@
                 Stop-Computer -Force
                 Exit
             }
-
-            #TODO: Make sure the ImageIndex is 1
+            #=================================================
+            # Is there only one ImageIndex?
             elseif ($Global:OSDCloud.WindowsImageCount -eq 1) {
                 $Global:OSDCloud.OSImageIndex = 1
             }
@@ -1141,6 +1141,7 @@
                 $Global:OSDCloud.OSImageIndex = 'AUTO'
             }
 
+            <#
             if ($Global:OSDCloud.OSImageIndex -ne 'AUTO') {
                 #Home Single Language Correction
                 if (($OSActivation -eq 'Retail') -and ($Global:OSDCloud.WindowsImageCount -eq 9)) {
@@ -1160,6 +1161,7 @@
                     }
                 }
             }
+            #>
         }
         else {
             #=================================================
@@ -1170,6 +1172,18 @@
             Write-Warning "Press Ctrl+C to exit"
             Start-Sleep -Seconds 86400
             Exit
+        }
+
+        if ($Global:OSDCloud.OSImageIndex -eq 'AUTO') {
+            if ($Global:OSDCloud.OSEditionId) {
+                $MatchingWindowsImage = $Global:OSDCloud.WindowsImage | `
+                    ForEach-Object { Get-WindowsImage -ImagePath $Global:OSDCloud.ImageFileDestination.FullName -Index $_.ImageIndex } | `
+                    Where-Object { $_.EditionId -eq $Global:OSDCloud.OSEditionId }
+            }
+                
+            if ($MatchingWindowsImage -and $MatchingWindowsImage.Count -eq 1) {
+                $Global:OSDCloud.OSImageIndex = $MatchingWindowsImage.ImageIndex
+            }
         }
 
         if ($Global:OSDCloud.OSImageIndex -eq 'AUTO') {
