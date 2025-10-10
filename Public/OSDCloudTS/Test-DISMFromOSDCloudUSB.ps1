@@ -26,6 +26,8 @@
             $PackageID = $DriverPack.PackageID
         }
         $ComputerManufacturer = (Get-MyComputerManufacturer -Brief)
+        # Remove trailing dots and extra spaces (e.g. ASUSTeK Computer INC.)
+        $ComputerManufacturer = $ComputerManufacturer.Trim().TrimEnd('.')
         if ($ComputerManufacturer -match "Samsung"){$ComputerManufacturer = "Samsung"}
         $DriverPathProduct = "$($OSDCloudDriveLetter):\OSDCloud\DriverPacks\DISM\$ComputerManufacturer\$ComputerProduct"
         $DriverPathModel = "$($OSDCloudDriveLetter):\OSDCloud\DriverPacks\DISM\$ComputerManufacturer\$ComputerModel"
@@ -42,7 +44,8 @@
         else { Return $false}
     }
     else{
-        Write-Host "NO OSDCloud USB Found"
+        # Write-Host "NO OSDCloud USB Found"
         return $false
     }
 }
+

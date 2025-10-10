@@ -48,6 +48,7 @@
 
         [Parameter(ParameterSetName = 'Default')]
         [ValidateSet(
+            'Windows 11 25H2 x64',
             'Windows 11 24H2 x64',
             'Windows 11 23H2 x64',
             'Windows 11 22H2 x64',
@@ -64,7 +65,7 @@
         #Operating System Build of the Windows installation
         #Alias = Build
         [Parameter(ParameterSetName = 'Legacy')]
-        [ValidateSet('24H2','23H2','22H2','21H2')]
+        [ValidateSet('25H2','24H2','23H2','22H2','21H2')]
         [Alias('Build','OSBuild')]
         [System.String]
         $OSReleaseID,
@@ -116,8 +117,8 @@
         #Images using the specified Image Index
         [Parameter(ParameterSetName = 'CustomImage')]
         [Alias('ImageIndex')]
-        [System.String]
-        $OSImageIndex = 'AUTO'
+        [System.Int32]
+        $OSImageIndex = 0
     )
     #=================================================
     #	$Global:StartOSDCloudCLI
@@ -265,7 +266,7 @@
             }
             else {
                 $Global:StartOSDCloudCLI.ImageFileItem = $null
-                $Global:StartOSDCloudCLI.OSImageIndex = 'AUTO'
+                $Global:StartOSDCloudCLI.OSImageIndex = 0
                 #$Global:OSDImageParent = $null
                 #$Global:OSDCloudWimFullName = $null
                 Write-Warning "Custom Windows Image on USB was not found"
@@ -281,7 +282,7 @@
             #Do nothing
         }
         elseif ($Global:StartOSDCloudCLI.ZTI) {
-            $Global:StartOSDCloudCLI.OSName = 'Windows 11 24H2 x64'
+            $Global:StartOSDCloudCLI.OSName = 'Windows 11 25H2 x64'
         }
         else {
             Write-Host -ForegroundColor DarkGray "========================================================================="
@@ -317,10 +318,13 @@
         }
         $OSVersion = $Global:StartOSDCloudCLI.OSVersion
 
-        if ($OSName -match '23H2') {
-            $Global:StartOSDCloudCLI.OSReleaseID = '24H2'
+        if ($OSName -match '25H2') {
+            $Global:StartOSDCloudCLI.OSReleaseID = '25H2'
         }
         if ($OSName -match '24H2') {
+            $Global:StartOSDCloudCLI.OSReleaseID = '24H2'
+        }
+        if ($OSName -match '23H2') {
             $Global:StartOSDCloudCLI.OSReleaseID = '23H2'
         }
         if ($OSName -match '22H2') {
@@ -455,7 +459,7 @@
             $Global:StartOSDCloudCLI.OSEdition = $Global:StartOSDCloudCLI.OSEditionMenu | Where-Object {$_.Selection -eq $SelectReadHost} | Select-Object -ExpandProperty Name
         }
         #=================================================
-        #	OSEditionId and OSActivation
+        #	OSEditionId OSEditionId OSActivation
         #=================================================
         if ($Global:StartOSDCloudCLI.OSEdition -eq 'Home') {
             $Global:StartOSDCloudCLI.OSEditionId = 'Core'

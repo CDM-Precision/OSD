@@ -5,6 +5,7 @@
     OSDCloud Cloud Module for functions.osdcloud.com
 .NOTES
     This module can be loaded in all Windows phases
+    Version 25.9.10.1
 .LINK
     https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/_anywhere.psm1
 .EXAMPLE

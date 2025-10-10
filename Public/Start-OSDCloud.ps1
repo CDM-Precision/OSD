@@ -50,6 +50,7 @@
 
         [Parameter(ParameterSetName = 'Default')]
         [ValidateSet(
+            'Windows 11 25H2 x64',
             'Windows 11 24H2 x64',
             'Windows 11 23H2 x64',
             'Windows 11 22H2 x64',
@@ -66,7 +67,7 @@
         #Operating System Build of the Windows installation
         #Alias = Build
         [Parameter(ParameterSetName = 'Legacy')]
-        [ValidateSet('24H2','23H2','22H2')]
+        [ValidateSet('25H2','24H2','23H2','22H2')]
         [Alias('Build')]
         [System.String]
         $OSBuild,
@@ -118,8 +119,8 @@
         #Images using the specified Image Index
         [Parameter(ParameterSetName = 'CustomImage')]
         [Alias('ImageIndex')]
-        [System.String]
-        $OSImageIndex = 'AUTO'
+        [System.Int32]
+        $OSImageIndex = 0
     )
     #=================================================
     #	$Global:StartOSDCloud
@@ -168,7 +169,7 @@
         OSLanguageNames = $null
         OSName = $OSName
         OSNameMenu = $null
-        OSNames = @('Windows 11 24H2 x64', 'Windows 11 23H2 x64', 'Windows 11 22H2 x64', 'Windows 10 22H2 x64')
+        OSNames = @('Windows 11 25H2 x64', 'Windows 11 24H2 x64', 'Windows 11 23H2 x64', 'Windows 11 22H2 x64', 'Windows 10 22H2 x64')
         OSVersion = $OSVersion
         OSVersionMenu = $null
         OSVersionNames = @('Windows 11','Windows 10')
@@ -297,7 +298,7 @@
             }
             else {
                 $Global:StartOSDCloud.ImageFileItem = $null
-                $Global:StartOSDCloud.OSImageIndex = 'AUTO'
+                $Global:StartOSDCloud.OSImageIndex = 0
                 #$Global:OSDImageParent = $null
                 #$Global:OSDCloudWimFullName = $null
                 Write-Warning "Custom Windows Image on USB was not found"
@@ -315,7 +316,7 @@
         if ($Global:StartOSDCloud.OSName) {
         }
         elseif ($Global:StartOSDCloud.ZTI) {
-            $Global:StartOSDCloud.OSName = 'Windows 11 24H2 x64'
+            $Global:StartOSDCloud.OSName = 'Windows 11 25H2 x64'
         }
         else {
             Write-Host -ForegroundColor DarkGray "========================================================================="
@@ -342,14 +343,20 @@
             $Global:StartOSDCloud.OSName = $Global:StartOSDCloud.OSNameMenu | Where-Object {$_.Selection -eq $SelectReadHost} | Select-Object -ExpandProperty Name
         }
         $OSName = $Global:StartOSDCloud.OSName
+        Write-Host -ForegroundColor DarkGray "[$(Get-Date -format G)] OSName is set to $($Global:StartOSDCloud.OSName)"
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Legacy') {
         #=================================================
         #	OSVersion
         #=================================================
         if ($Global:StartOSDCloud.OSVersion) {
+            # Do nothing if this case
         }
         elseif ($Global:StartOSDCloud.ZTI) {
+            $Global:StartOSDCloud.OSVersion = 'Windows 11'
+        }
+        elseif ($Global:StartOSDCloud.OSBuild -match "25H2|24H2|23H2") {
+            # We know the OSVersion already if using one of these
             $Global:StartOSDCloud.OSVersion = 'Windows 11'
         }
         else {
@@ -378,18 +385,19 @@
             $Global:StartOSDCloud.OSVersion = $Global:StartOSDCloud.OSVersionMenu | Where-Object {$_.Selection -eq $SelectReadHost} | Select-Object -ExpandProperty Name
         }
         $OSVersion = $Global:StartOSDCloud.OSVersion
+        Write-Host -ForegroundColor DarkGray "[$(Get-Date -format G)] OSVersion is set to $($Global:StartOSDCloud.OSVersion)"
         #=================================================
         #	OSBuild
         #=================================================
         if ($Global:StartOSDCloud.OSBuild) {
         }
         elseif ($Global:StartOSDCloud.ZTI) {
-            $Global:StartOSDCloud.OSBuild = '24H2'
+            $Global:StartOSDCloud.OSBuild = '25H2'
         }
         else {
             Write-Host -ForegroundColor DarkGray "========================================================================="
             Write-Host -ForegroundColor Cyan "[$(Get-Date -format G)] Select a Build for $OSVersion x64"
-            $Global:StartOSDCloud.OSBuildNames = @('24H2','23H2','22H2')
+            $Global:StartOSDCloud.OSBuildNames = @('25H2','24H2','23H2','22H2')
             
             $i = $null
             $Global:StartOSDCloud.OSBuildMenu = foreach ($Item in $Global:StartOSDCloud.OSBuildNames) {
@@ -412,6 +420,7 @@
             $Global:StartOSDCloud.OSBuild = $Global:StartOSDCloud.OSBuildMenu | Where-Object {$_.Selection -eq $SelectReadHost} | Select-Object -ExpandProperty Name
         }
         $OSBuild = $Global:StartOSDCloud.OSBuild
+        Write-Host -ForegroundColor DarkGray "[$(Get-Date -format G)] OSBuild is set to $($Global:StartOSDCloud.OSBuild)"
     }
         #=================================================
         #	OSEdition
@@ -564,6 +573,7 @@
             $Global:StartOSDCloud.OSLanguage = $Global:StartOSDCloud.OSLanguageMenu | Where-Object {$_.Selection -eq $SelectReadHost} | Select-Object -ExpandProperty Name
         }
         $OSLanguage = $Global:StartOSDCloud.OSLanguage
+        Write-Host -ForegroundColor DarkGray "[$(Get-Date -format G)] OSLanguage is set to $($Global:StartOSDCloud.OSLanguage)"
     }
     #=================================================
     #	Default
