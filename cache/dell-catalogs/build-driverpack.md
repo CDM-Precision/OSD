@@ -3,9 +3,9 @@
 | | |
 |-|-|
 | Owner | David Segura |
-| Build Version | 25.9.23.1 |
+| Build Version | 25.10.29.1 |
 | PowerShell Module | OSD.Build |
 | PowerShell Function | Build-OSDCatalogDellDriverPack |
 | Files | build-driverpack.* |
 | Build Workflow | GitHub Actions |
-| Last Update | Tuesday, September 23, 2025 11:06:17 AM UTC |
+| Last Update | Wednesday, October 29, 2025 11:07:12 AM UTC |
