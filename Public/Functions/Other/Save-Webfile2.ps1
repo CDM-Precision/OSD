@@ -1,17 +1,17 @@
-$Global:LogFilePathSWF2 = "C:\OSDCloud\Logs\Save-Webfile2.log"
+$Global:LogFilePathSWF2 = "$env:SystemDrive\OSDCloud\Logs\Save-Webfile2.log"
 $Global:LogFileSizeSWF2   = "40"
 
 function Start-CMTraceLog {
     # Checks for path to log file and creates if it does not exist
     param (
         [Parameter(Mandatory = $true)]
-        [string]$Path
+        [string]$Path = "$env:SystemDrive\OSDCloud\Logs\Save-Webfile2.log"
     )
 
     $indexoflastslash = $Path.lastindexof('\')
     $directory = $Path.substring(0, $indexoflastslash)
 
-    if (!(test-path -path $directory)){
+    if (!(Test-Path -Path $directory)){
         New-Item -ItemType Directory -Path $directory
     }
     else{
@@ -26,7 +26,7 @@ function Write-CMTraceLog {
         [string]$Message,
         
         [Parameter(Mandatory = $false)]
-        [string]$LogPath = $($script:LogFilePathSWF2),
+        [string]$LogPath = $($Global:LogFilePathSWF2),
             
         [Parameter()]
         [ValidateSet(1, 2, 3)]
@@ -60,7 +60,7 @@ function Write-CMTraceLog {
 } 
 
 
-Start-CMTraceLog -Path $Global:LogFilePathSWF2
+Start-CMTraceLog -Path "$env:SystemDrive\OSDCloud\Logs\Save-Webfile2.log"
 Write-CMTraceLog -Message "Starting Save-Webfile2 Script..." -Type "Info" -Component "Save-Webfile"
 <#
 .SYNOPSIS
