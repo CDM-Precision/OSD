@@ -34,6 +34,7 @@ powershell iex (irm sandbox.osdcloud.com)
 param()
 $ScriptName = 'sandbox.osdcloud.com'
 $ScriptVersion = '23.6.10.1'
+$CDMBranch = 'test'
 
 #region Initialize
 $Transcript = "$((Get-Date).ToString('yyyy-MM-dd-HHmmss'))-$ScriptName.log"
@@ -51,7 +52,7 @@ else {
 }
 
 Write-Host -ForegroundColor Green "[+] $ScriptName $ScriptVersion ($WindowsPhase Phase)"
-Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/main/cloud/functions.ps1")
+Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/refs/heads/$CDMBranch/cloud/functions.ps1")
 #endregion
 
 #region Admin Elevation

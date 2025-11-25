@@ -1,3 +1,67 @@
+$Global:LogFilePathSWF2 = "C:\OSDCloud\Logs\Save-Webfile2.log"
+$Global:LogFileSizeSWF2   = "40"
+
+function Start-CMTraceLog {
+    # Checks for path to log file and creates if it does not exist
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $indexoflastslash = $Path.lastindexof('\')
+    $directory = $Path.substring(0, $indexoflastslash)
+
+    if (!(test-path -path $directory)){
+        New-Item -ItemType Directory -Path $directory
+    }
+    else{
+        # Directory Exists, do nothing    
+    }
+}
+
+
+function Write-CMTraceLog {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Message,
+        
+        [Parameter(Mandatory = $false)]
+        [string]$LogPath = $($script:LogFilePathSWF2),
+            
+        [Parameter()]
+        [ValidateSet(1, 2, 3)]
+        [int]$LogLevel = 1,
+
+        [Parameter()]
+        [string]$Component,
+
+        [Parameter()]
+        [ValidateSet('Info','Warning','Error')]
+        [string]$Type
+    )
+    Switch ($Type) {
+        Info {$LogLevel = 1}
+        Warning {$LogLevel = 2}
+        Error {$LogLevel = 3}
+    }
+    # Get Date message was triggered
+    $TimeGenerated = "$(Get-Date -Format HH:mm:ss).$((Get-Date).Millisecond)+000"
+    $Line = '<![LOG[{0}]LOG]!><time="{1}" date="{2}" component="{3}" context="" type="{4}" thread="" file="">'
+    $LineFormat = $Message, $TimeGenerated, (Get-Date -Format MM-dd-yyyy), $Component, $LogLevel
+    $Line = $Line -f $LineFormat
+    # Write new line in the log file
+    Add-Content -Value $Line -Path $LogPath
+    # Roll log file over at size threshold
+    if ((Get-Item $Global:LogFilePathSWF2).Length / 1KB -gt $Global:LogFileSizeSWF2) {
+        $log = $Global:LogFilePathSWF2
+        Remove-Item ($log.Replace(".log", ".lo_"))
+        Rename-Item $Global:LogFilePathSWF2 ($log.Replace(".log", ".lo_")) -Force
+    }
+} 
+
+
+Start-CMTraceLog -Path $Global:LogFilePathSWF2
+Write-CMTraceLog -Message "Starting Save-Webfile2 Script..." -Type "Info" -Component "Save-Webfile"
 <#
 .SYNOPSIS
     Resolves the final URL after following all HTTP redirects.
@@ -60,14 +124,17 @@ function Get-FinalRedirectUrl {
             $resp = $req.GetResponse()
             
             if ($resp.ResponseUri.OriginalString -eq $Url) {
+                Write-CMTraceLog -Message "Final url: $Url" -Type "Info" -Component "${CmdletName}"
                 return $Url
             } else {
-                Write-Host "Redirected url: $($resp.ResponseUri.OriginalString)"
+                #Write-Host "Redirected url: $($resp.ResponseUri.OriginalString)"
+                Write-CMTraceLog -Message "Redirected url: $($resp.ResponseUri.OriginalString)" -Type "Info" -Component "${CmdletName}"
                 return $resp.ResponseUri.OriginalString
             }
         }
         catch {
-            Write-Host "Error processing URL '$Url': $_"
+            #Write-Host "Error processing URL '$Url': $_"
+            Write-CMTraceLog -Message "Error processing URL: '$Url' : $_" -Type "Error" -Component "${CmdletName}"
             throw $_
         }
         finally {
@@ -134,11 +201,14 @@ function Get-CurrentFileSize {
     Begin{
         [String]${CmdletName} = $PSCmdlet.MyInvocation.MyCommand.Name
          Write-Host "${CmdletName}"
+         Write-CMTraceLog -Message "${CmdletName}" -Type "Info" -Component "${CmdletName}"
     }
     Process{
         if (Test-Path -Path $FilePath) {
+        Write-CMTraceLog -Message "Local file size: $((Get-Item -Path $FilePath).Length)" -Type "Info" -Component "${CmdletName}"
         return (Get-Item -Path $FilePath).Length
         } else {
+            Write-CMTraceLog -Message "Local file size: 0" -Type "Warning" -Component "${CmdletName}"
             return 0
         }
     }
@@ -219,27 +289,32 @@ function Test-FileSize {
 
     Process {
         try {
-            Write-Host "Starting file integrity check..."
-            
+            #Write-Host "Starting file integrity check..."
+            Write-CMTraceLog -Message "Starting file integrity check..." -Type "Info" -Component "${CmdletName}"
             # Convert and validate path
             $cpath = Convert-Path $downloadedFilePath
             if (-not (Test-Path -Path $cpath -PathType Leaf)) {
+                Write-CMTraceLog -Message "File not found: $downloadedFilePath" -Type "Error" -Component "${CmdletName}"
                 throw "File not found: $downloadedFilePath"
             }
 
             # Check file size
             $actualSize = (Get-Item -Path $cpath).Length
-            Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
+            Write-CMTraceLog -Message "Expected size: $fileSize bytes, Actual size: $actualSize bytes" -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
             
             if ($fileSize -ne $actualSize) {
                 Remove-DownloadedFile -downloadedFilePath $downloadedFilePath
+                Write-CMTraceLog -Message "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes" -Type "Error" -Component "${CmdletName}"
                 throw "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes"
             }
-
-            Write-Host "File size verification passed" 
+            
+            Write-CMTraceLog -Message "File size verification passed"  -Type "Info" -Component "${CmdletName}"
+            #Write-Host "File size verification passed" 
             return $true
         }
         catch {
+            Write-CMTraceLog -Message "File integrity check failed: $_"  -Type "Error" -Component "${CmdletName}"
             Write-Host "File integrity check failed: $_"
             throw $_
         }
@@ -270,39 +345,48 @@ function Test-FileIntegrity {
 
     Process {
         try {
-            Write-Host "Starting file integrity check..."
+            Write-CMTraceLog -Message "Starting file integrity check..."  -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Starting file integrity check..."
             
             # Convert and validate path
             $cpath = Convert-Path $downloadedFilePath
             if (-not (Test-Path -Path $cpath -PathType Leaf)) {
+                Write-CMTraceLog -Message "File not found: $downloadedFilePath"  -Type "Error" -Component "${CmdletName}"
                 throw "File not found: $downloadedFilePath"
             }
 
             # Check file size
             $actualSize = (Get-Item -Path $cpath).Length
-            Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
+            Write-CMTraceLog -Message "Expected size: $fileSize bytes, Actual size: $actualSize bytes"  -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Expected size: $fileSize bytes, Actual size: $actualSize bytes"
             
             if ($fileSize -ne $actualSize) {
                 Remove-DownloadedFile -downloadedFilePath $downloadedFilePath
+                Write-CMTraceLog -Message "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes" -Type "Error" -Component "${CmdletName}"
                 throw "File size mismatch. Expected: $fileSize bytes, Actual: $actualSize bytes"
             }
-
-            Write-Host "File size verification passed" 
+            
+            Write-CMTraceLog -Message "File size verification passed"  -Type "Info" -Component "${CmdletName}"
+            #Write-Host "File size verification passed" 
 
             # Check file hash if size matches
-            Write-Host "Starting hash verification..."
+            Write-CMTraceLog -Message "Starting hash verification..."  -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Starting hash verification..."
             $hashResult = Test-FileHashIntegrity -Checksum $Checksum -ChecksumType $ChecksumType -downloadedFilePath $downloadedFilePath
             
             if (-not $hashResult) {
                 Remove-DownloadedFile -downloadedFilePath $downloadedFilePath
+                Write-CMTraceLog -Message "File hash verification failed: $_"  -Type "Error" -Component "${CmdletName}"
                 throw "File hash verification failed"
             }
 
             Write-Host "File integrity check completed successfully"
+            Write-CMTraceLog -Message "File integrity check completed successfully"  -Type "Info" -Component "${CmdletName}"
             return $true
         }
         catch {
-            Write-Host "File integrity check failed: $_"
+            #Write-Host "File integrity check failed: $_"
+            Write-CMTraceLog -Message "File integrity check failed: $_"  -Type "Error" -Component "${CmdletName}"
             throw $_
         }
     }
@@ -403,24 +487,31 @@ function Test-FileHashIntegrity {
     Process {
         try {
             $cpath = Convert-Path $downloadedFilePath
-            Write-Host "Calculating $ChecksumType hash for file: $cpath"
+            #Write-Host "Calculating $ChecksumType hash for file: $cpath"
+            Write-CMTraceLog -Message "Calculating $ChecksumType hash for file: $cpath"  -Type "Info" -Component "${CmdletName}"
             
             $localFileHash = (Get-FileHash -Algorithm $ChecksumType -Path $cpath -ErrorAction Stop).Hash
-            Write-Host "Calculated hash: $localFileHash"
-            Write-Host "Expected hash: $Checksum"
+            Write-CMTraceLog -Message "Calculated hash: $localFileHash"  -Type "Info" -Component "${CmdletName}"
+            Write-CMTraceLog -Message "Expected hash: $Checksum"  -Type "Info" -Component "${CmdletName}"
+
+            #Write-Host "Calculated hash: $localFileHash"
+            #Write-Host "Expected hash: $Checksum"
 
             $result = $Checksum.ToUpper() -eq $localFileHash.ToUpper()
             
             if ($result) {
                 Write-Host "Hash verification successful"
+                Write-CMTraceLog -Message "Hash verification successful" -Type "Info" -Component "${CmdletName}"
             } else {
                 Write-Host "Hash verification failed"
+                Write-CMTraceLog -Message "Hash verification failed" -Type "Error" -Component "${CmdletName}"
             }
             
             return $result
         }
         catch {
-            Write-Host "Error during hash verification: $_"
+            #Write-Host "Error during hash verification: $_"
+            Write-CMTraceLog -Message "Error during hash verification: $_" -Type "Error" -Component "${CmdletName}"
             throw $_
         }
     }
@@ -520,25 +611,32 @@ function Test-PartialFileHash {
 
     Process {
         try {
-            Write-Host "Starting partial hash verification for: $FilePath"
+            Write-CMTraceLog -Message "Starting partial hash verification for: $FilePath" -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Starting partial hash verification for: $FilePath"
             
             $computedHash = (Get-FileHash -Algorithm $ChecksumType -Path $FilePath -ErrorAction Stop).Hash
-            Write-Host "Computed $ChecksumType hash: $computedHash"
-            Write-Host "Expected hash: $Checksum"
+            Write-CMTraceLog -Message "Computed $ChecksumType hash: $computedHash" -Type "Info" -Component "${CmdletName}"
+            Write-CMTraceLog -Message "Expected hash: $Checksum" -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Computed $ChecksumType hash: $computedHash"
+            #Write-Host "Expected hash: $Checksum"
 	
 			$result = $Checksum.ToUpper() -eq $computedHash.ToUpper()
             
             if ($result) {
-                Write-Host "Hash verification successful"
+                Write-CMTraceLog -Message "Hash verification successful" -Type "Info" -Component "${CmdletName}"
+                #Write-Host "Hash verification successful"
             } else {
-                Write-Host "Hash verification failed"
-                Write-Host "Expected: $Checksum`nActual: $computedHash"
+                Write-CMTraceLog -Message "Hash verification failed" -Type "Error" -Component "${CmdletName}"
+                Write-CMTraceLog -Message "Expected: $Checksum`nActual: $computedHash" -Type "Error" -Component "${CmdletName}"
+                #Write-Host "Hash verification failed"
+                #Write-Host "Expected: $Checksum`nActual: $computedHash"
             }
             
             return $result
         }
         catch {
-            Write-Host "Error during partial hash verification: $_"
+            Write-CMTraceLog -Message "Error during partial hash verification: $_" -Type "Error" -Component "${CmdletName}"
+            #Write-Host "Error during partial hash verification: $_"
             return $false
         }
     }
@@ -614,19 +712,23 @@ function Remove-DownloadedFile {
     Process {
         try {
             if (Test-Path -Path $downloadedFilePath) {
-                Write-Host "Attempting to remove: $downloadedFilePath"
+                Write-CMTraceLog -Message "Attempting to remove: $downloadedFilePath" -Type "Warning" -Component "${CmdletName}"
+                #Write-Host "Attempting to remove: $downloadedFilePath"
                 
                 if ($PSCmdlet.ShouldProcess($downloadedFilePath, "Remove file/directory")) {
                     Remove-Item -Path $downloadedFilePath -Force -Recurse -ErrorAction Stop
-                    Write-Host "Successfully removed: $downloadedFilePath"
+                    #Write-Host "Successfully removed: $downloadedFilePath"
+                    Write-CMTraceLog -Message "Successfully removed: $downloadedFilePath" -Type "Info" -Component "${CmdletName}"
                 }
             }
             else {
-                Write-Host "Path not found, nothing to remove: $downloadedFilePath"
+                Write-CMTraceLog -Message "Path not found, nothing to remove: $downloadedFilePath" -Type "Error" -Component "${CmdletName}"
+                #Write-Host "Path not found, nothing to remove: $downloadedFilePath"
             }
         }
         catch {
-            Write-Host "Failed to remove $downloadedFilePath : $_"
+            Write-CMTraceLog -Message "Failed to remove $downloadedFilePath : $_" -Type "Error" -Component "${CmdletName}"
+            #Write-Host "Failed to remove $downloadedFilePath : $_"
             throw $_
         }
     }
@@ -697,13 +799,16 @@ function Invoke-FileDownload {
 
         $isPartialFileValid = $false
         if ($Validate -and (Test-Path -Path $OutFile)) {
-            Write-Host "Partially downloaded file found. Verifying hash..."
+            Write-CMTraceLog -Message "Partially downloaded file found. Verifying hash..." -Type "Info" -Component "${CmdletName}"
+            #Write-Host "Partially downloaded file found. Verifying hash..."
             $isPartialFileValid = Test-PartialFileHash -FilePath $OutFile -Checksum $Checksum -ChecksumType $ChecksumType
             if ($isPartialFileValid) {
-                Write-Host "Partial file is valid. Skipping download..."
+                Write-CMTraceLog -Message "Partial file is valid. Skipping download..." -Type "Info" -Component "${CmdletName}"
+                #Write-Host "Partial file is valid. Skipping download..."
                 return $true
             } else {
-                Write-Host "Partial file is corrupted. Deleting and restarting download..."
+                Write-CMTraceLog -Message "Partial file is corrupted. Deleting and restarting download..." -Type "Error" -Component "${CmdletName}"
+                #Write-Host "Partial file is corrupted. Deleting and restarting download..."
                 Remove-DownloadedFile -downloadedFilePath $OutFile
             }
         }
@@ -724,36 +829,48 @@ function Invoke-FileDownload {
 					}
                     #$downloadSize = $requestedFile.'Content-Length'
                     $downloadSize = [Int64]::Parse(($requestedFile.'Content-Length' | Select-Object -First 1))
-                    Write-Host "Selected download method: Invoke-Webrequest"
-                    Write-Host "Start downloading from $link"
-                    Write-Host "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB"
+                    Write-CMTraceLog -Message "Selected download method: curl" -Type "Info" -Component "${CmdletName}"
+                    Write-CMTraceLog -Message "Start downloading from $link" -Type "Info" -Component "${CmdletName}"
+                    Write-CMTraceLog -Message "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB" -Type "Info" -Component "${CmdletName}"
+                    #Write-Host "Selected download method: Invoke-Webrequest"
+                    #Write-Host "Start downloading from $link"
+                    #Write-Host "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB"
                     #Invoke-WebRequest -Uri $link -OutFile $OutFile
                     Invoke-Expression "& curl.exe --insecure --location --output `"$DestinationFullName`" --url `"$SourceUrl`""
                 }
                 catch {
-                    Write-Host "Failed to transfer with Invoke-WebRequest. Here is the error message:"
-                    Write-Host "$($error[0].exception.message)"
+                    Write-CMTraceLog -Message "Failed to transfer with Invoke-WebRequest. Here is the error message:" -Type "Error" -Component "${CmdletName}"
+                    Write-CMTraceLog -Message "$($error[0].exception.message)" -Type "Error" -Component "${CmdletName}"
+                    #Write-Host "Failed to transfer with Invoke-WebRequest. Here is the error message:"
+                    #Write-Host "$($error[0].exception.message)"
                     throw
                 }
             #}
 
             If (Test-Path -Path $OutFile) {
-                Write-Host "Time taken: $((Get-Date).Subtract($start_time).Minutes) minute(s) $((Get-Date).Subtract($start_time).Seconds) second(s)"
-                Write-Host "Downloaded size: $([math]::Round((Get-ItemProperty -Path $OutFile).Length / 1MB, 2)) MB"
-                Write-Host "Downloaded file location: $OutFile"
+                
+                Write-CMTraceLog -Message "Time taken: $((Get-Date).Subtract($start_time).Minutes) minute(s) $((Get-Date).Subtract($start_time).Seconds) second(s)" -Type "Info" -Component "${CmdletName}"
+                Write-CMTraceLog -Message "Downloaded size: $([math]::Round((Get-ItemProperty -Path $OutFile).Length / 1MB, 2)) MB" -Type "Info" -Component "${CmdletName}"
+                Write-CMTraceLog -Message "Downloaded file location: $OutFile" -Type "Info" -Component "${CmdletName}"
+                #Write-Host "Time taken: $((Get-Date).Subtract($start_time).Minutes) minute(s) $((Get-Date).Subtract($start_time).Seconds) second(s)"
+                #Write-Host "Downloaded size: $([math]::Round((Get-ItemProperty -Path $OutFile).Length / 1MB, 2)) MB"
+                #Write-Host "Downloaded file location: $OutFile"
 
                 if ($Validate) {
-                    Write-Host "File integrity check starting"
+                    Write-CMTraceLog -Message "File integrity check starting" -Type "Info" -Component "${CmdletName}"
+                    #Write-Host "File integrity check starting"
                     Test-FileIntegrity -fileSize $downloadSize -downloadedFilePath $OutFile -Checksum $Checksum -ChecksumType $Checksumtype | Out-Null
                 }
                 else{
-                    Write-Host "Filesize check starting"
+                    Write-CMTraceLog -Message "Filesize check starting" -Type "Info" -Component "${CmdletName}"
+                    #Write-Host "Filesize check starting"
                     Test-FileSize -fileSize $downloadSize -downloadedFilePath $OutFile | Out-Null
                 }
                 return $true
             }
         } catch {
-            Write-Host "Download failed: $($_.Exception.Message)"
+            #Write-Host "Download failed: $($_.Exception.Message)"
+            Write-CMTraceLog -Message "Download failed: $($_.Exception.Message)" -Type "Info" -Component "${CmdletName}"
             throw
         }
         return $false
@@ -833,30 +950,40 @@ function Save-WebFile2 {
     }
     Process {
         while ($attempt -le $RetryCount) {
-            Write-Host "Attempt $attempt of $RetryCount..."
+            #Write-Host "Attempt $attempt of $RetryCount..."
+            Write-CMTraceLog -Message "Attempt $attempt of $RetryCount..." -Type "Info" -Component "${CmdletName}"
             try {
                 $result = Invoke-FileDownload -URL $URL -OutFile $OutFile -Validate:$Validate -ChecksumType $ChecksumType -Checksum $Checksum
                 if ($result) {
-                    Write-Host "Download verification succeeded on attempt $attempt."
+                    Write-CMTraceLog -Message "Download verification succeeded on attempt $attempt." -Type "Info" -Component "${CmdletName}"
+                    #Write-Host "Download verification succeeded on attempt $attempt."
                     return
                 }
+                Write-CMTraceLog -Message "Download failed without exception" -Type "Error" -Component "${CmdletName}"
                 throw "Download failed without exception"
             } catch {
-                Write-Host "Attempt $attempt failed: $($_.Exception.Message), URL = $URL"
+                Write-CMTraceLog -Message "Attempt $attempt failed: $($_.Exception.Message), URL = $URL" -Type "Error" -Component "${CmdletName}"
+                #Write-Host "Attempt $attempt failed: $($_.Exception.Message), URL = $URL"
                 $attempt++
                 if ($attempt -gt $RetryCount) {
                     if (Test-Path -Path $OutFile) {
-                       Write-Host "Final attempt failed. Removing downloaded file..."
+                        Write-CMTraceLog -Message "Final attempt failed. Removing downloaded file..." -Type "Error" -Component "${CmdletName}"
+                        #Write-Host "Final attempt failed. Removing downloaded file..."
                         Remove-DownloadedFile -downloadedFilePath $OutFile
                     }
+                    Write-CMTraceLog -Message "Download failed after $RetryCount attempts." -Type "Error" -Component "${CmdletName}"
                     throw "Download failed after $RetryCount attempts."
                 }
+                Write-CMTraceLog -Message "Retrying in 5 seconds..." -Type "Info" -Component "${CmdletName}"
                 Write-Host "Retrying in 5 seconds..."
                 Start-Sleep -Seconds 5
             }
         }
     }
 }
+$Global:LogFilePathSWF2 = "X:\OSD\Logs\Save-Webfile2.log"
+Start-CMTraceLog -Path ""
+Write-CMTraceLog -Message "Starting Save-Webfile2 Script..." -Type "Info" -Component "Save-Webfile"
 
 
 <#

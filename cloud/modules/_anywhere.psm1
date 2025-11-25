@@ -407,13 +407,14 @@ function osdcloud-UpdateModuleFilesManually {
         [ValidateSet($true, $false)]
         $DEVMode = $false
         ) 
+        $CDMBranch = 'test'
     write-host "Manually Updating Several Module Files directly from GitHub" -ForegroundColor Cyan
     $ModulePath = (Get-ChildItem -Path "$($Env:ProgramFiles)\WindowsPowerShell\Modules\osd" | Where-Object {$_.Attributes -match "Directory"} | select -Last 1).fullname
     write-host "Updating Files in $ModulePath"
     $OSDCloudGUIDevProjectPath = "Projects\OSDCloudDev"
     $OSDCloudGUIProjectPath = "Projects\OSDCloudGUI"
     $OSDCloudFunctionsPath = "Public\Functions\OSDCloud"
-    $GitHubURI = "https://raw.githubusercontent.com/CDM-Precision/OSD/main"
+    $GitHubURI = "https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.ps1"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIDevProjectPath/MainWindow.xaml" -OutFile "$ModulePath/$OSDCloudGUIDevProjectPath/MainWindow.xaml"
     Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/$OSDCloudGUIProjectPath/MainWindow.ps1" -OutFile "$ModulePath/$OSDCloudGUIProjectPath/MainWindow.ps1"
@@ -471,7 +472,7 @@ function osdcloud-UpdateModuleFilesManually {
             Invoke-WebRequest -UseBasicParsing -uri "$GitHubURI/OSD.psd1" -OutFile "$ModulePath/OSD.psd1"
         }
     }
-    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/deviceshp.psm1')}
+    if (Test-HPIASupport -eq $true){Invoke-Expression (Invoke-RestMethod -Uri `"https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/modules/deviceshp.psm1`")}
 }
 #endregion
 #=================================================
@@ -701,9 +702,9 @@ function osdcloud-InstallModuleMSGraphDeviceManagement {
 function osdcloud-InstallModuleOSD {
     [CmdletBinding()]
     param ()
-    
+    $CDMBranch = 'test'
     $Name = "OSD"
-    $url = "https://github.com/CDM-Precision/OSD/archive/refs/heads/main.zip"
+    $url = "https://github.com/CDM-Precision/OSD/archive/refs/heads/$CDMBranch.zip"
     
     Write-Host -ForegroundColor Yellow "[-] CDM - Install-Module $Name [CurrentUser]"
     $zipPath = "$env:TEMP\$Name.zip"

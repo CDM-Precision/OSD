@@ -261,7 +261,7 @@ function osdcloud-WinpeUpdateDefender {
     else {Write-Output "Failed Defender Kit Download"}
 }
 function osdcloud-SetupCompleteDefenderUpdate {
-
+    $CDMBranch = "test"
     $ScriptsPath = "C:\Windows\Setup\scripts"
     if (!(Test-Path -Path $ScriptsPath)){New-Item -Path $ScriptsPath} 
 
@@ -270,7 +270,7 @@ function osdcloud-SetupCompleteDefenderUpdate {
 
     if (Test-Path -Path $PSFilePath){
         Add-Content -Path $PSFilePath "Write-Output 'Running Defender Update Stack Function'"
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/defender.psm1')"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri `"https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/modules/defender.psm1`")"
         Add-Content -Path $PSFilePath "osdcloud-UpdateDefenderStack"
     }
     else {
@@ -285,7 +285,7 @@ function osdcloud-SetupCompleteNetFX {
 
     if (Test-Path -Path $PSFilePath){
         Add-Content -Path $PSFilePath "Write-Output 'Running Enable NetFX Function'"
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/eq-oobe.psm1')"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri `"https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/modules/eq-oobe.psm1`")"
         Add-Content -Path $PSFilePath "osdcloud-NetFX"
     }
     else {
@@ -303,7 +303,7 @@ function osdcloud-SetupCompleteMS365Install {
 
     if (Test-Path -Path $PSFilePath){
         Add-Content -Path $PSFilePath "Write-Output 'Running M365 Install'"
-        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/CDM-Precision/OSD/main/cloud/modules/m365.psm1')"
+        Add-Content -Path $PSFilePath "Invoke-Expression (Invoke-RestMethod -Uri `"https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/modules/m365.psm1`")"
         Add-Content -Path $PSFilePath "osdcloud-InstallM365 -CompanyValue $CompanyValue -Channel 'MonthlyEnterprise'"
     }
     else {

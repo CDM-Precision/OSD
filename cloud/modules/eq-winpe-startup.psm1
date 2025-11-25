@@ -34,6 +34,7 @@ function osdcloud-StartWinPE {
         [System.Management.Automation.SwitchParameter]
         $OSDCloud
     )
+    $CDMBranch = 'test'
     if ($env:SystemDrive -eq 'X:') {
         osdcloud-SetExecutionPolicy
         osdcloud-WinpeSetEnvironmentVariables
@@ -45,7 +46,7 @@ function osdcloud-StartWinPE {
         if ($OSDCloud) {
             osdcloud-WinpeInstallCurl
             osdcloud-InstallPowerShellModule -Name PSReadLine
-            osdcloud-InstallCDMModule -Name OSD -URL "https://github.com/CDM-Precision/OSD/archive/refs/heads/test.zip"
+            osdcloud-InstallCDMModule -Name OSD -URL "https://github.com/CDM-Precision/OSD/archive/refs/heads/$CDMBranch.zip"
             if (-not (Get-Command 'curl.exe' -ErrorAction SilentlyContinue)) {
                 Write-Warning 'curl.exe is missing from WinPE. This is required for OSDCloud to function'
                 Start-Sleep -Seconds 5
@@ -54,7 +55,7 @@ function osdcloud-StartWinPE {
         }
         if ($Azure) {
             $KeyVault = $false
-            Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+            Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/functions.ps1")
             osdcloud-InstallPowerShellModule -Name 'AzureAD'
             osdcloud-InstallPowerShellModule -Name 'Az.Accounts'
             osdcloud-InstallPowerShellModule -Name 'Az.KeyVault'
@@ -64,7 +65,7 @@ function osdcloud-StartWinPE {
             osdcloud-InstallPowerShellModule -Name 'Microsoft.Graph.DeviceManagement'
         }
         if ($KeyVault) {
-            Invoke-Expression -Command (Invoke-RestMethod -Uri functions.osdcloud.com)
+            Invoke-Expression -Command (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/CDM-Precision/OSD/$CDMBranch/cloud/functions.ps1")
             osdcloud-InstallPowerShellModule -Name 'Az.Accounts'
             osdcloud-InstallPowerShellModule -Name 'Az.KeyVault'
         }
