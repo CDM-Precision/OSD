@@ -835,8 +835,8 @@ function Invoke-FileDownload {
                     #Write-Host "Selected download method: Invoke-Webrequest"
                     #Write-Host "Start downloading from $link"
                     #Write-Host "File size: $([math]::Round(([Int64]"$downloadSize")/1MB,2))MB"
-                    #Invoke-WebRequest -Uri $link -OutFile $OutFile
-                    Invoke-Expression "& curl.exe --insecure --location --output `"$OutFile`" --url `"$SourceUrl`""
+                    Invoke-WebRequest -Uri $link -OutFile $OutFile
+                    #Invoke-Expression "& curl.exe --insecure --location --output `"$OutFile`" --url `"$SourceUrl`""
                 }
                 catch {
                     Write-CMTraceLog2 -Message "Failed to transfer with Invoke-WebRequest. Here is the error message:" -Type "Error" -Component "${CmdletName}"
